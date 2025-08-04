@@ -18,8 +18,8 @@ import ktx.log.logger
 class GameScreen : KtxScreen{
     private val stage : Stage = Stage (ExtendViewport(16f,9f))
     private val texture : Texture = Texture("wanderland/assets/graphics/player.png")
-    private val world: World = World{
-        
+    private val world:World = World
+        privaate
     }
 
     //Function displays what is shown on the window to the playerb including the character,
