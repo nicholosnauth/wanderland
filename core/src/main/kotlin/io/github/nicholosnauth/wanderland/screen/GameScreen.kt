@@ -1,11 +1,11 @@
 package io.github.nicholosnauth.wanderland.screen
 
 import com.badlogic.gdx.graphics.Texture
-import com.github.quillraven.fleks.World
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.viewport.ExtendViewport
+import com.github.quillraven.fleks.World
 import ktx.app.KtxScreen
 import ktx.assets.disposeSafely
 import ktx.log.logger
@@ -19,7 +19,7 @@ class GameScreen : KtxScreen {
 
 }
 
-    //Function displays what is shown on the window to the playerb including the character,
+  //  Function displays what is shown on the window to the playerb including the character,
     override fun show() {
         log.debug{ "The GameScreen is shown!"}//test message to see if the function is displaying the  window
         stage.addActor(
