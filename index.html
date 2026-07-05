@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wanderland — Neo Valley</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="hud">
+  <div id="orbCount">✦ Spirit Lights &nbsp;0 / 20</div>
+  <div id="clock"></div>
+  <div id="toast"></div>
+  <div id="banner"><div class="big">WANDERLAND</div><div class="rule"></div><div class="sub">NEO VALLEY</div></div>
+  <svg id="stamina" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="24" fill="rgba(0,0,0,0.35)"/>
+    <circle id="stamRing" cx="32" cy="32" r="24" fill="none" stroke="#8fe07a" stroke-width="7" stroke-dasharray="150.8" stroke-dashoffset="0" transform="rotate(-90 32 32)"/>
+  </svg>
+  <div id="hint">WASD move · SHIFT sprint · SPACE jump / hold to glide · mouse camera · scroll zoom · ESC cursor</div>
+</div>
+<div id="start">
+  <h1>WANDERLAND</h1>
+  <div class="tag">GINKGO GROVES · CHROME SPIRES · TWENTY LOST LIGHTS</div>
+  <div class="keys">WASD — run &nbsp;·&nbsp; SHIFT — sprint &nbsp;·&nbsp; SPACE — jump / glide<br>
+  Wander the golden groves · Reach the Aurora Spire · Recover the spirit lights</div>
+  <div class="go">CLICK TO BEGIN</div>
+</div>
+
+<!-- three.js as a classic global; our own code is ES modules -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

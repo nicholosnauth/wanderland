@@ -1,33 +1,80 @@
-# Wanderland
+# Wanderland — Neo Valley
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+Open-world exploration game in Three.js. Ginkgo groves, retro-futuristic
+settlement, day/night cycle, glider, stamina, 20 spirit lights to collect.
 
-This project was generated with a template that includes Kotlin application launchers and an empty `ApplicationAdapter` implemented in Kotlin.
+## Run it
 
-## Platforms
+Browsers block ES module imports over `file://`, so serve the folder:
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+```bash
+cd wanderland
+python3 -m http.server 8000
+```
 
-## Gradle
+Then open http://localhost:8000
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+Any static server works (`npx serve`, VS Code Live Server, etc.).
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+## Controls
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+| Input | Action |
+|---|---|
+| WASD | move |
+| Shift | sprint (drains stamina) |
+| Space | jump; hold while falling to glide |
+| Mouse | orbit camera |
+| Scroll | zoom |
+| Esc | release cursor |
+
+## Architecture
+
+Every system is a module exporting `init(ctx)` and optionally `update(ctx)`.
+Systems never import each other's internals; they communicate through the
+shared `ctx` object that `main.js` passes around:
+
+```
+ctx.scene / ctx.camera / ctx.renderer / ctx.sun / ctx.hemi   (engine)
+ctx.player   { pos, vel, facing, stamina, gliding, ... }     (player)
+ctx.cam      { yaw, pitch, dist }                            (camera)
+ctx.time     { timeOfDay, sunUp, duskAmt, night }            (sky)
+ctx.frame    { dt, t }                                       (main loop)
+ctx.hud      { toast, setStamina, setClock, setOrbs }        (hud)
+ctx.keys     keyboard state                                  (player)
+```
+
+```
+src/
+  config.js       every tunable number in one place
+  noise.js        pure functions: noise, terrainHeight, textures, scatter
+  engine.js       renderer, scene, lighting rig, ACES pipeline
+  sky.js          sky shader, stars, clouds, day/night cycle
+  terrain.js      heightmap mesh + biome coloring
+  water.js        animated wave surface
+  flora.js        ginkgos, grass wind shader, rocks, leaf/firefly particles
+  settlement.js   Aurora Spire, domes, monorail, relay pylons
+  player.js       physics, stamina, glide, keyboard
+  character.js    hero mesh + procedural animation
+  camera.js       third-person orbit follow, mouse input
+  collectibles.js spirit lights
+  hud.js          all DOM: overlay, banner, toasts, stamina ring
+  main.js         composition root + game loop
+```
+
+`noise.terrainHeight(x, z)` is the single source of truth for ground height,
+shared by rendering, physics, and placement — change it and everything
+(terrain mesh, collision, tree placement, building foundations) stays in sync.
+
+## Adding a system
+
+1. Create `src/wildlife.js`:
+   ```js
+   export function init(ctx) { /* build meshes, add to ctx.scene */ }
+   export function update(ctx) { /* use ctx.frame.dt, ctx.player, ctx.time */ }
+   ```
+2. In `main.js`, import it and add to `systems` and `updaters`.
+
+## Tuning
+
+Open `src/config.js`. World size, day length, movement speeds, stamina rates,
+tree/grass counts, plateau location — all there. No hunting through code.
